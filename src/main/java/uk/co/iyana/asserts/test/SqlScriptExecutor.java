@@ -5,7 +5,6 @@
  */
 package uk.co.iyana.asserts.test;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -22,11 +21,13 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 public class SqlScriptExecutor {
     
     
-    public static void execute (String jndiName, String resourceUrl) throws NamingException, SQLException {
+    public static void execute (String jndiName, String... resourceUrls) throws NamingException, SQLException {
         Context context = new InitialContext();
         DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/" + jndiName);        
         
-        Resource resource = new ClassPathResource(resourceUrl);
-        ScriptUtils.executeSqlScript( ds.getConnection(), resource);
+        for(String resourceUrl : resourceUrls) {
+            Resource resource = new ClassPathResource(resourceUrl);
+            ScriptUtils.executeSqlScript( ds.getConnection(), resource);
+        }
     }
 }
